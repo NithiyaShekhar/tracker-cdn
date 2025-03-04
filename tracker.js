@@ -4,27 +4,27 @@
 
   // Function to Get or Generate User ID
   function getUserId() {
-    let userId = localStorage.getItem("userId"); // Fetch stored user ID
-    let guestId = localStorage.getItem("guestId"); // Fetch guest ID if available
+    let userId = localStorage.getItem("userId"); 
+    let guestId = localStorage.getItem("guestId"); 
 
     if (userId) {
-        return { userId, guestId: null }; // Return actual user ID
+        return { userId, guestId: null }; 
     } else {
         if (!guestId) {
-            guestId = "guest_" + Math.random().toString(36).substr(2, 9); // Generate random guest ID
+            guestId = "guest_" + Math.random().toString(36).substr(2, 9); 
             localStorage.setItem("guestId", guestId);
         }
-        return { userId: null, guestId }; // Return guest ID when user is not logged in
+        return { userId: null, guestId }; 
     }
 }
 
 
   function getUserEmail() {
-    return localStorage.getItem("userEmail") || "guest@example.com"; // Replace with actual email retrieval logic
+    return localStorage.getItem("userEmail") || "guest@example.com"; // email retrieval logic
 }
 
 function getUserRole() {
-    return localStorage.getItem("userRole") || "guest"; // Replace with actual role retrieval logic
+    return localStorage.getItem("userRole") || "guest"; // role retrieval logic
 }
 
   // Get Referrer Source
