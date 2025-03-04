@@ -1,4 +1,3 @@
-<script type="text/javascript">
   (function () {
     const API_ENDPOINT = "https://b6cf-60-243-64-58.ngrok-free.app/webhook";
 
@@ -124,4 +123,3 @@
     });
 
   })();
-</script>
