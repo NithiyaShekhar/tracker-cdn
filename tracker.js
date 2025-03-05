@@ -65,7 +65,7 @@ function getUserRole() {
           body: JSON.stringify(trackingData)
       })
           .then((response) => response.json())
-          .then((data) => console.log("✅ Data sent:", data))
+        //   .then((data) => console.log("✅ Data sent:", data))
           .catch((error) => console.error("❌ API Error:", error));
   }
 
