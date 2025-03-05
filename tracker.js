@@ -8,8 +8,22 @@
     }
 
     function getUserEmail() {
-        return sessionStorage.getItem("userEmail") || localStorage.getItem("userEmail") || null;
+        let email = sessionStorage.getItem("userEmail") || localStorage.getItem("userEmail");
+    
+        if (!email) {
+            // Try getting email from Profile Page
+            const emailElement = document.querySelector(".user-email"); // Adjust selector if needed
+            if (emailElement) {
+                email = emailElement.innerText.trim();
+                sessionStorage.setItem("userEmail", email);
+                localStorage.setItem("userEmail", email);
+                console.log("✅ Extracted email from profile:", email);
+            }
+        }
+    
+        return email || null;
     }
+    
 
     function getUserRole() {
         return sessionStorage.getItem("userRole") || localStorage.getItem("userRole") || null;
@@ -77,7 +91,7 @@
                 console.warn(`No email found, retrying in ${attempt + 1}s...`);
                 setTimeout(() => trackPageLoad(attempt + 1), 1000);
             } else {
-                console.error("🚨 Email not found after multiple attempts, skipping tracking.");
+                console.error("Email not found after multiple attempts, skipping tracking.");
             }
             return;
         }
@@ -126,6 +140,13 @@
         })
             .then((response) => response.json())
           //   .then((data) => console.log("✅ Data sent:", data))
+          .then(user => {
+            if (user.email && user.role) {
+                trackLogin(user.email, user.role);
+            } else {
+                console.error("🚨 No email/role found in user data:", user);
+            }
+        })
             .catch((error) => console.error("❌ API Error:", error));
     }
   
