@@ -43,6 +43,8 @@
         localStorage.setItem("userRole", role);
 
         console.log("User logged in:", { email, role });
+        trackLogin("adil@drift.com", "admin"); 
+
 
         sendTrackingData("User Login");
     }
@@ -156,6 +158,13 @@
     });
   
     window.addEventListener("load", function () {
+        setTimeout(() => {
+            if (!getUserEmail()) {
+                console.warn("No email found, retrying in 1s...");
+                return;
+            }
+            sendTrackingData("Page Load");
+        }, 1000); 
         sendTrackingData("Page Load", { referrer: getReferrerSource() });
     });
 
