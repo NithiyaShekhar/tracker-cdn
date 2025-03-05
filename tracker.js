@@ -4,18 +4,16 @@
   
     // Function to Get or Generate User ID
     function getUserId() {
-      return localStorage.getItem("userId") || null; // Fetch the actual user ID
-  }
-  
-  
-  
+        return sessionStorage.getItem("userId") || localStorage.getItem("userId") || null;
+    }
+
     function getUserEmail() {
-      return localStorage.getItem("userEmail") || "guest@example.com"; // email retrieval logic
-  }
-  
-  function getUserRole() {
-      return localStorage.getItem("userRole") || "guest"; // role retrieval logic
-  }
+        return sessionStorage.getItem("userEmail") || localStorage.getItem("userEmail") || null;
+    }
+
+    function getUserRole() {
+        return sessionStorage.getItem("userRole") || localStorage.getItem("userRole") || null;
+    }
   
     // Get Referrer Source
     function getReferrerSource() {
@@ -31,13 +29,54 @@
         if (referrer.includes("tiktok.com")) return "TikTok";
         return referrer;
     }
+     // Function to Set User Details on Login (Without User ID Initially)
+     function trackLogin(email, role) {
+        if (!email || !role) {
+            console.error("Login details missing:", { email, role });
+            return;
+        }
+
+        sessionStorage.setItem("userEmail", email);
+        sessionStorage.setItem("userRole", role);
+
+        localStorage.setItem("userEmail", email);
+        localStorage.setItem("userRole", role);
+
+        console.log("User logged in:", { email, role });
+
+        sendTrackingData("User Login");
+    }
+    // Function to Update User ID When Available (On Profile Page)
+    function updateUserId(userId) {
+        if (!userId) return;
+
+        sessionStorage.setItem("userId", userId);
+        localStorage.setItem("userId", userId);
+
+        console.log("User ID updated:", userId);
+    }
+
+    // Function to Track Logout
+    function trackLogout() {
+        sendTrackingData("User Logout");
+
+        sessionStorage.clear();
+        localStorage.clear();
+
+        console.log("User logged out");
+    }
+
   
     // Send Tracking Data
     function sendTrackingData(eventType, extraData = {}) {
         const userId = getUserId();
         const email = getUserEmail();
         const role = getUserRole();
-        const userAgent = navigator.userAgent;
+        if (!email) {
+            console.warn("No email found, skipping tracking:", eventType);
+            return; // Skip tracking if email is not available
+        }
+        // const userAgent = navigator.userAgent;
         const platform = `${navigator.platform} - ${navigator.appVersion}`;
         const pageURL = window.location.href;
         const timestamp = new Date().toISOString();
@@ -119,5 +158,10 @@
     window.addEventListener("load", function () {
         sendTrackingData("Page Load", { referrer: getReferrerSource() });
     });
+
+     // Expose Login, Logout, and User ID Update Functions
+     window.trackLogin = trackLogin;
+     window.trackLogout = trackLogout;
+     window.updateUserId = updateUserId;
   
   })();
