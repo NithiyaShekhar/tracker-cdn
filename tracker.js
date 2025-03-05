@@ -4,19 +4,19 @@
   
     // Function to Get or Generate User ID
     function getUserId() {
-        return sessionStorage.getItem("userId") || localStorage.getItem("userId") || null;
+        return sessionStorage.getItem("username") || localStorage.getItem("username") || null;
     }
 
     function getUserEmail() {
-        let email = sessionStorage.getItem("userEmail") || localStorage.getItem("userEmail");
+        let email = sessionStorage.getItem("email") || localStorage.getItem("email");
     
         if (!email) {
             // Try getting email from Profile Page
             const emailElement = document.querySelector(".user-email"); // Adjust selector if needed
             if (emailElement) {
                 email = emailElement.innerText.trim();
-                sessionStorage.setItem("userEmail", email);
-                localStorage.setItem("userEmail", email);
+                sessionStorage.setItem("email", email);
+                localStorage.setItem("email", email);
                 console.log("✅ Extracted email from profile:", email);
             }
         }
@@ -52,10 +52,10 @@
             return;
         }
     
-        sessionStorage.setItem("userEmail", email);
+        sessionStorage.setItem("email", email);
         sessionStorage.setItem("userRole", role);
     
-        localStorage.setItem("userEmail", email);
+        localStorage.setItem("email", email);
         localStorage.setItem("userRole", role);
     
         console.log("✅ User logged in:", { email, role }); // Debugging
@@ -64,13 +64,13 @@
     }
     
     // Function to Update User ID When Available (On Profile Page)
-    function updateUserId(userId) {
-        if (!userId) return;
+    function updateUserId(username) {
+        if (!username) return;
 
-        sessionStorage.setItem("userId", userId);
-        localStorage.setItem("userId", userId);
+        sessionStorage.setItem("username", username);
+        localStorage.setItem("username", username);
 
-        console.log("User ID updated:", userId);
+        console.log("User ID updated:", username);
     }
 
     // Function to Track Logout
@@ -104,7 +104,7 @@
   
     // Send Tracking Data
     function sendTrackingData(eventType, extraData = {}) {
-        const userId = getUserId();
+        const username = getUserId();
         const email = getUserEmail();
         const role = getUserRole();
         if (!email) {
@@ -117,7 +117,7 @@
         const timestamp = new Date().toISOString();
   
         const trackingData = {
-            userId,
+            username,
             email,
             role,
             eventType,
@@ -139,15 +139,14 @@
             body: JSON.stringify(trackingData)
         })
             .then((response) => response.json())
-          //   .then((data) => console.log("✅ Data sent:", data))
           .then(user => {
             if (user.email && user.role) {
                 trackLogin(user.email, user.role);
             } else {
-                console.error("🚨 No email/role found in user data:", user);
+                console.error(" No email/role found in user data:", user);
             }
         })
-            .catch((error) => console.error("❌ API Error:", error));
+            .catch((error) => console.error(" API Error:", error));
     }
   
     // Track Events
