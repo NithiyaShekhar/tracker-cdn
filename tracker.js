@@ -4,30 +4,18 @@
   
     // Function to Get or Generate User ID
     function getUserId() {
-        return sessionStorage.getItem("username") || localStorage.getItem("username") || null;
-    }
-
+      return localStorage.getItem("userId") || null; // Fetch the actual user ID
+  }
+  
+  
+  
     function getUserEmail() {
-        let email = sessionStorage.getItem("email") || localStorage.getItem("email");
-    
-        if (!email) {
-            // Try getting email from Profile Page
-            const emailElement = document.querySelector(".user-email"); // Adjust selector if needed
-            if (emailElement) {
-                email = emailElement.innerText.trim();
-                sessionStorage.setItem("email", email);
-                localStorage.setItem("email", email);
-                console.log("✅ Extracted email from profile:", email);
-            }
-        }
-    
-        return email || null;
-    }
-    
-
-    function getUserRole() {
-        return sessionStorage.getItem("userRole") || localStorage.getItem("userRole") || null;
-    }
+      return localStorage.getItem("userEmail") || "guest@example.com"; // email retrieval logic
+  }
+  
+  function getUserRole() {
+      return localStorage.getItem("userRole") || "guest"; // role retrieval logic
+  }
   
     // Get Referrer Source
     function getReferrerSource() {
@@ -40,82 +28,22 @@
         if (referrer.includes("linkedin.com")) return "LinkedIn";
         if (referrer.includes("google.com")) return "Google Search";
         if (referrer.includes("bing.com")) return "Bing Search";
+        if (referrer.includes("tiktok.com")) return "TikTok";
         return referrer;
     }
-     // Function to Set User Details on Login (Without User ID Initially)
-     function trackLogin(email, role) {
-        console.log("trackLogin called with:", email, role); // Debugging
-    
-        if (!email || !role) {
-            console.error(" Login details missing:", { email, role });
-            return;
-        }
-    
-        sessionStorage.setItem("email", email);
-        sessionStorage.setItem("userRole", role);
-    
-        localStorage.setItem("email", email);
-        localStorage.setItem("userRole", role);
-    
-        console.log("✅ User logged in:", { email, role }); // Debugging
-    
-        sendTrackingData("User Login");
-    }
-    
-    // Function to Update User ID When Available (On Profile Page)
-    function updateUserId(username) {
-
-        sessionStorage.setItem("username", username);
-        localStorage.setItem("username", username);
-
-        console.log("User ID updated:", username);
-    }
-
-    // Function to Track Logout
-    function trackLogout() {
-        sendTrackingData("User Logout");
-
-        sessionStorage.clear();
-        localStorage.clear();
-
-        console.log("User logged out");
-    }
-    //page load
-    function trackPageLoad(attempt = 0) {
-        const email = getUserEmail();
-        
-        if (!email) {
-            if (attempt < 5) {
-                console.warn(`No email found, retrying in ${attempt + 1}s...`);
-                setTimeout(() => trackPageLoad(attempt + 1), 1000);
-            } else {
-                console.error("Email not found after multiple attempts, skipping tracking.");
-            }
-            return;
-        }
-    
-        sendTrackingData("Page Load");
-    }
-    
-   
-
   
     // Send Tracking Data
     function sendTrackingData(eventType, extraData = {}) {
-        const username = getUserId();
+        const userId = getUserId();
         const email = getUserEmail();
         const role = getUserRole();
-        if (!email) {
-            console.warn("No email found, skipping tracking:", eventType);
-            return; // Skip tracking if email is not available
-        }
-        // const userAgent = navigator.userAgent;
+        const userAgent = navigator.userAgent;
         const platform = `${navigator.platform} - ${navigator.appVersion}`;
         const pageURL = window.location.href;
         const timestamp = new Date().toISOString();
   
         const trackingData = {
-            username,
+            userId,
             email,
             role,
             eventType,
@@ -137,14 +65,8 @@
             body: JSON.stringify(trackingData)
         })
             .then((response) => response.json())
-          .then(user => {
-            if (user.email && user.role) {
-                trackLogin(user.email, user.role);
-            } else {
-                console.error(" No email/role found in user data:", user);
-            }
-        })
-            .catch((error) => console.error(" API Error:", error));
+          //   .then((data) => console.log("✅ Data sent:", data))
+            .catch((error) => console.error("❌ API Error:", error));
     }
   
     // Track Events
@@ -194,25 +116,8 @@
         sendTrackingData("Session End", { sessionDuration: Math.floor((Date.now() - sessionStartTime) / 1000) + "s" });
     });
   
-    // window.addEventListener("load", function () {
-    //     setTimeout(() => {
-    //         if (!getUserEmail()) {
-    //             console.warn("No email found, retrying in 1s...");
-    //             return;
-    //         }
-    //         sendTrackingData("Page Load");
-    //     }, 1000); 
-    //     sendTrackingData("Page Load", { referrer: getReferrerSource() });
-    // });
-     // Run on page load
-     window.addEventListener("load", function () {
-        trackPageLoad();
+    window.addEventListener("load", function () {
+        sendTrackingData("Page Load", { referrer: getReferrerSource() });
     });
-    
-
-     // Expose Login, Logout, and User ID Update Functions
-     window.trackLogin = trackLogin;
-     window.trackLogout = trackLogout;
-     window.updateUserId = updateUserId;
   
   })();
