@@ -35,7 +35,7 @@ function getUserRole() {
   // Send Tracking Data
   function sendTrackingData(eventType, extraData = {}) {
       const userId = getUserId();
-      if (!userId) return;
+    //   if (!userId) return;
       const email = getUserEmail();
       const role = getUserRole();
       const userAgent = navigator.userAgent;
