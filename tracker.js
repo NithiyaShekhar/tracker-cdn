@@ -31,23 +31,24 @@
     }
      // Function to Set User Details on Login (Without User ID Initially)
      function trackLogin(email, role) {
+        console.log("trackLogin called with:", email, role); // Debugging
+    
         if (!email || !role) {
-            console.error("Login details missing:", { email, role });
+            console.error(" Login details missing:", { email, role });
             return;
         }
-
+    
         sessionStorage.setItem("userEmail", email);
         sessionStorage.setItem("userRole", role);
-
+    
         localStorage.setItem("userEmail", email);
         localStorage.setItem("userRole", role);
-
-        console.log("User logged in:", { email, role });
-        trackLogin("adil@drift.com", "admin"); 
-
-
+    
+        console.log("✅ User logged in:", { email, role }); // Debugging
+    
         sendTrackingData("User Login");
     }
+    
     // Function to Update User ID When Available (On Profile Page)
     function updateUserId(userId) {
         if (!userId) return;
@@ -67,6 +68,24 @@
 
         console.log("User logged out");
     }
+    //page load
+    function trackPageLoad(attempt = 0) {
+        const email = getUserEmail();
+        
+        if (!email) {
+            if (attempt < 5) {
+                console.warn(`No email found, retrying in ${attempt + 1}s...`);
+                setTimeout(() => trackPageLoad(attempt + 1), 1000);
+            } else {
+                console.error("🚨 Email not found after multiple attempts, skipping tracking.");
+            }
+            return;
+        }
+    
+        sendTrackingData("Page Load");
+    }
+    
+   
 
   
     // Send Tracking Data
@@ -157,16 +176,21 @@
         sendTrackingData("Session End", { sessionDuration: Math.floor((Date.now() - sessionStartTime) / 1000) + "s" });
     });
   
-    window.addEventListener("load", function () {
-        setTimeout(() => {
-            if (!getUserEmail()) {
-                console.warn("No email found, retrying in 1s...");
-                return;
-            }
-            sendTrackingData("Page Load");
-        }, 1000); 
-        sendTrackingData("Page Load", { referrer: getReferrerSource() });
+    // window.addEventListener("load", function () {
+    //     setTimeout(() => {
+    //         if (!getUserEmail()) {
+    //             console.warn("No email found, retrying in 1s...");
+    //             return;
+    //         }
+    //         sendTrackingData("Page Load");
+    //     }, 1000); 
+    //     sendTrackingData("Page Load", { referrer: getReferrerSource() });
+    // });
+     // Run on page load
+     window.addEventListener("load", function () {
+        trackPageLoad();
     });
+    
 
      // Expose Login, Logout, and User ID Update Functions
      window.trackLogin = trackLogin;
