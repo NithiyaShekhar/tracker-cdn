@@ -7,25 +7,18 @@
         return sessionStorage.getItem("username") || localStorage.getItem("username") || null;
     }
 
-    function getUserEmail(retryCount = 0) {
-        let email =
-            sessionStorage.getItem("userEmail") || // Old key
-            sessionStorage.getItem("username") || // New key
-            localStorage.getItem("userEmail") ||
-            localStorage.getItem("username");
+    function getUserEmail() {
+        let email = sessionStorage.getItem("email") || localStorage.getItem("email");
     
         if (!email) {
+            // Try getting email from Profile Page
             const emailElement = document.querySelector(".user-email"); // Adjust selector if needed
             if (emailElement) {
                 email = emailElement.innerText.trim();
-                sessionStorage.setItem("userEmail", email);
-                localStorage.setItem("userEmail", email);
+                sessionStorage.setItem("email", email);
+                localStorage.setItem("email", email);
+                console.log("✅ Extracted email from profile:", email);
             }
-        }
-    
-        if (!email && retryCount < 10) {
-            console.warn(`No email found, retrying in ${retryCount + 1}s...`);
-            setTimeout(() => getUserEmail(retryCount + 1), 1000);
         }
     
         return email || null;
@@ -47,7 +40,6 @@
         if (referrer.includes("linkedin.com")) return "LinkedIn";
         if (referrer.includes("google.com")) return "Google Search";
         if (referrer.includes("bing.com")) return "Bing Search";
-        if (referrer.includes("tiktok.com")) return "TikTok";
         return referrer;
     }
      // Function to Set User Details on Login (Without User ID Initially)
@@ -72,7 +64,6 @@
     
     // Function to Update User ID When Available (On Profile Page)
     function updateUserId(username) {
-        if (!username) return;
 
         sessionStorage.setItem("username", username);
         localStorage.setItem("username", username);
