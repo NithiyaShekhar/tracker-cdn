@@ -7,18 +7,25 @@
         return sessionStorage.getItem("username") || localStorage.getItem("username") || null;
     }
 
-    function getUserEmail() {
-        let email = sessionStorage.getItem("email") || localStorage.getItem("email");
+    function getUserEmail(retryCount = 0) {
+        let email =
+            sessionStorage.getItem("userEmail") || // Old key
+            sessionStorage.getItem("username") || // New key
+            localStorage.getItem("userEmail") ||
+            localStorage.getItem("username");
     
         if (!email) {
-            // Try getting email from Profile Page
             const emailElement = document.querySelector(".user-email"); // Adjust selector if needed
             if (emailElement) {
                 email = emailElement.innerText.trim();
-                sessionStorage.setItem("email", email);
-                localStorage.setItem("email", email);
-                console.log("✅ Extracted email from profile:", email);
+                sessionStorage.setItem("userEmail", email);
+                localStorage.setItem("userEmail", email);
             }
+        }
+    
+        if (!email && retryCount < 10) {
+            console.warn(`No email found, retrying in ${retryCount + 1}s...`);
+            setTimeout(() => getUserEmail(retryCount + 1), 1000);
         }
     
         return email || null;
