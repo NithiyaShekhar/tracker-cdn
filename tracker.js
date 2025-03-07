@@ -62,7 +62,8 @@
         fetch(API_ENDPOINT, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(trackingData)
+            body: JSON.stringify(trackingData),
+             mode: "cors"
         })
             .then((response) => response.json())
           //   .then((data) => console.log("✅ Data sent:", data))
