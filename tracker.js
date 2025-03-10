@@ -96,9 +96,9 @@
              mode: "cors"
         })
         .then(response => response.json())
-        // .then(user => {
-        //     console.log("✅ Response from API:", user);
-        // })
+        .then(user => {
+            console.log("✅ Response from API:", user);
+        })
             .catch((error) => console.error("❌ API Error:", error));
     }
     
@@ -152,8 +152,6 @@
   
     window.addEventListener("load", () => {
         getUserDetailsFromPage();
-        
-        // 🔹 Delay tracking by 4 seconds to allow role/email extraction
         setTimeout(() => {
             sendTrackingData("Page Load");
         }, 2000);
