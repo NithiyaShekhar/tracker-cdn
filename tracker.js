@@ -5,19 +5,30 @@
       // Extract User Details from the Page
       function getUserDetailsFromPage() {
         setTimeout(() => {
-            let roleElement = document.querySelector(".header-user-name");
-            let emailElement = document.querySelector(".header-user-name");
+            let roleElement = document.querySelector(".header-user-name"); // Role
+            let emailElement = document.querySelector(".rt_table_col"); // Email
     
-            let role = roleElement ? roleElement.innerText.trim() : "guest";
-            let email = emailElement ? emailElement.innerText.trim() : "random@example.com";
+            let role = roleElement ? roleElement.innerText.trim() : null;
+            let email = emailElement ? emailElement.innerText.trim() : null;
     
             console.log("Extracted Role:", role);
             console.log("Extracted Email:", email);
     
-            localStorage.setItem("userEmail", email);
-            localStorage.setItem("userRole", role);
-        }, 2000);  // Wait 2 seconds to allow DOM to load
+            if (email && role) {
+                localStorage.setItem("userEmail", email);
+                localStorage.setItem("userRole", role);
+            } else {
+                console.warn("User details not found!");
+            }
+    
+            // Verify by retrieving from localStorage
+            console.log("Stored Email:", localStorage.getItem("userEmail"));
+            console.log("Stored Role:", localStorage.getItem("userRole"));
+        }, 2000); // Wait 2 seconds for DOM to load
     }
+    
+    // Ensure function runs after the page is fully loaded
+    window.addEventListener("load", getUserDetailsFromPage);
     
   
     // Function to Get or Generate User ID
