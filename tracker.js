@@ -3,10 +3,15 @@
     let sessionStartTime = Date.now();
 
       // Extract User Details from the Page
-      function getUserDetailsFromPage() {
+      function getUserDetailsFromPage(attempts = 10) {
+        if (attempts <= 0) {
+            console.warn("❌ User details not found after multiple attempts!");
+            return;
+        }
+    
         setTimeout(() => {
-            let emailElements = document.querySelectorAll(".email");
-            let roleElement = document.querySelector(".con_foo_title"); // Role
+            let emailElements = document.querySelectorAll(".email"); // Make sure this is correct
+            let roleElement = document.querySelector(".con_foo_title"); // Ensure this selector is correct
     
             let role = roleElement ? roleElement.innerText.trim() : null;
             let email = null;
@@ -26,10 +31,12 @@
                 console.log("✅ Stored Email:", localStorage.getItem("userEmail"));
                 console.log("✅ Stored Role:", localStorage.getItem("userRole"));
             } else {
-                console.warn("❌ User details not found!");
+                console.warn(`❌ Attempt ${11 - attempts}: User details not found! Retrying...`);
+                getUserDetailsFromPage(attempts - 1); // Retry if not found
             }
-        }, 3000);
+        }, 1000); // Retry every 1 second
     }
+    
     
     
     // Ensure function runs after the page is fully loaded
@@ -154,13 +161,19 @@
     });
   
     window.addEventListener("load", () => {
-        getUserDetailsFromPage();
+        getUserDetailsFromPage(); 
         
-        // 🔹 Delay tracking by 4 seconds to allow role/email extraction
+        // 🔹 Delay tracking to allow time for email/role extraction
         setTimeout(() => {
+            console.log("🚀 Fetching User Details Before Sending Data");
+            console.log("📌 LocalStorage Debugging:", {
+                userEmail: localStorage.getItem("userEmail"),
+                userRole: localStorage.getItem("userRole"),
+            });
             sendTrackingData("Page Load");
-        }, 4000);
+        }, 5000); // Wait 5s to ensure extraction completes
     });
+    
     
     
   
