@@ -135,7 +135,12 @@
     });
   
     window.addEventListener("load", function () {
-        sendTrackingData("Page Load", { referrer: getReferrerSource() });
+        getUserDetailsFromPage(); // Extract user details from the page
+        setTimeout(() => {
+            console.log("User Email from LocalStorage:", localStorage.getItem("userEmail"));
+            console.log("User Role from LocalStorage:", localStorage.getItem("userRole"));
+        }, 3000); // Wait 3 seconds to verify storage
     });
+    
   
   })();
