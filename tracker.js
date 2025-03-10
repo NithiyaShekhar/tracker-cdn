@@ -5,8 +5,8 @@
       // Extract User Details from the Page
       function getUserDetailsFromPage() {
         setTimeout(() => {
-            let emailElements = document.querySelectorAll(".rt_table_col");
-            let roleElement = document.querySelector(".con_foo_title"); // Role
+            let emailElements = document.querySelectorAll(".email");
+            let roleElement = document.querySelector(".con_title");
     
             let role = roleElement ? roleElement.innerText.trim() : null;
             let email = null;
@@ -16,10 +16,6 @@
                     email = el.innerText.trim();
                 }
             });
-    
-            console.log("✅ Extracted Role:", role);
-            console.log("✅ Extracted Email:", email);
-    
             if (email && role) {
                 localStorage.setItem("userEmail", email);
                 localStorage.setItem("userRole", role);
