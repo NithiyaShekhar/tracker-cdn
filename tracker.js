@@ -75,7 +75,7 @@
           //   .then((data) => console.log("✅ Data sent:", data))
             .catch((error) => console.error("❌ API Error:", error));
     }
-    fetch("https://c1b4-60-243-64-58.ngrok-free.app/auth/user", { 
+    fetch(API_ENDPOINT, { 
         credentials: "include",
         mode: "cors" 
     })
