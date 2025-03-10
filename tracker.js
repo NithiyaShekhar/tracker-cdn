@@ -4,8 +4,8 @@
 
       // Extract User Details from the Page
       function getUserDetailsFromPage() {
-        let role = document.querySelector(".con_foo_title")?.innerText.trim() || "guest";
-        let email = document.querySelector(".rt_table_col")?.innerText.trim() || "unknown@example.com";
+        let role = document.querySelector(".header-user-name")?.innerText.trim() || "guest";
+        let email = document.querySelector(".header-user-name")?.innerText.trim() || "unknown@example.com";
 
         // Store in LocalStorage for Future Use
         localStorage.setItem("userEmail", email);
