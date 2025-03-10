@@ -4,14 +4,9 @@
 
       // Extract User Details from the Page
       function getUserDetailsFromPage(attempts = 10) {
-        if (attempts <= 0) {
-            console.warn("❌ User details not found after multiple attempts!");
-            return;
-        }
     
-        setTimeout(() => {
             let emailElements = document.querySelectorAll(".email"); // Make sure this is correct
-            let roleElement = document.querySelector(".con_foo_title"); // Ensure this selector is correct
+            let roleElement = document.querySelector(".header-user-name"); // Ensure this selector is correct
     
             let role = roleElement ? roleElement.innerText.trim() : null;
             let email = null;
@@ -31,10 +26,8 @@
                 console.log("✅ Stored Email:", localStorage.getItem("userEmail"));
                 console.log("✅ Stored Role:", localStorage.getItem("userRole"));
             } else {
-                console.warn(`❌ Attempt ${11 - attempts}: User details not found! Retrying...`);
                 getUserDetailsFromPage(attempts - 1); // Retry if not found
             }
-        }, 1000); // Retry every 1 second
     }
     
     
