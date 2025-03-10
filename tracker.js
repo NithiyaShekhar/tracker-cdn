@@ -2,54 +2,52 @@
     const API_ENDPOINT = "https://c1b4-60-243-64-58.ngrok-free.app/webhook";
     let sessionStartTime = Date.now();
 
-      // Extract User Details from the Page
-      function getUserDetailsFromPage() {
+    // Extract User Details from the Page
+    function getUserDetailsFromPage() {
         setTimeout(() => {
             let emailElements = document.querySelectorAll(".email");
-            let roleElement = document.querySelector(".con_title");
-    
-            let role = roleElement ? roleElement.innerText.trim() : null;
+            let roleElement = document.querySelector(".con_foo_title"); // 🔹 Fetching Name instead of Role
+            let userIdElement = document.querySelector(".con_title"); // 🔹 Fetching User ID
+
+            let userName = roleElement ? roleElement.innerText.trim() : null; // User Name (was previously Role)
+            let userId = userIdElement ? userIdElement.innerText.trim() : "SW-110"; // User ID
             let email = null;
-    
+
             emailElements.forEach(el => {
                 if (el.innerText.includes("@")) {
                     email = el.innerText.trim();
                 }
             });
-            if (email && role) {
+
+            if (email && userName && userId) {
                 localStorage.setItem("userEmail", email);
-                localStorage.setItem("userRole", role);
+                localStorage.setItem("userName", userName); // 🔹 Storing Name instead of Role
+                localStorage.setItem("userId", userId); // 🔹 Storing Correct User ID
                 console.log("✅ Stored Email:", localStorage.getItem("userEmail"));
-                console.log("✅ Stored Role:", localStorage.getItem("userRole"));
+                console.log("✅ Stored Name:", localStorage.getItem("userName"));
+                console.log("✅ Stored User ID:", localStorage.getItem("userId"));
             } else {
                 console.warn("❌ User details not found!");
             }
         }, 3000);
     }
-    
-    
+
     // Run function after page load
     window.addEventListener("load", getUserDetailsFromPage);
-    
-    
-    // Ensure function runs after the page is fully loaded
-    window.addEventListener("load", getUserDetailsFromPage);
-    
-  
-    // Function to Get or Generate User ID
+
+    // Get stored values
     function getUserId() {
-        return localStorage.getItem("userId") || "123";
+        return localStorage.getItem("userId") || "SW-110";
     }
-    
+
     function getUserEmail() {
-        return localStorage.getItem("userEmail") || "random@example.com";
+        return localStorage.getItem("userEmail") || "unknown@example.com";
     }
-    
-  
-  function getUserRole() {
-      return localStorage.getItem("userRole") || "guest"; 
-  }
-  
+
+    function getUserName() {
+        return localStorage.getItem("userName") || "Guest"; // 🔹 Changed from Role to Name
+    }
+
     // Get Referrer Source
     function getReferrerSource() {
         const referrer = document.referrer;
@@ -64,21 +62,21 @@
         if (referrer.includes("tiktok.com")) return "TikTok";
         return referrer;
     }
-  
+
     // Send Tracking Data
     function sendTrackingData(eventType, extraData = {}) {
-        const userId = localStorage.getItem("userId") || "SW-110";
-    const email = localStorage.getItem("userEmail") || "unknown@example.com";
-    const role = localStorage.getItem("userRole") || "guest"; 
+        const userId = getUserId();
+        const email = getUserEmail();
+        const userName = getUserName(); // 🔹 Fetching Name instead of Role
         const userAgent = navigator.userAgent;
         const platform = `${navigator.platform} - ${navigator.appVersion}`;
         const pageURL = window.location.href;
         const timestamp = new Date().toISOString();
-  
+
         const trackingData = {
             userId,
             email,
-            role,
+            userName, // 🔹 Using Name instead of Role
             eventType,
             timestamp,
             platform,
@@ -87,26 +85,26 @@
             sessionDuration: Math.floor((Date.now() - sessionStartTime) / 1000) + "s",
             ...extraData
         };
+
         console.log("📤 Sending Tracking Data:", trackingData);
+
         // Store in LocalStorage
         localStorage.setItem("userTrackingData", JSON.stringify(trackingData));
-  
+
         // Send to API
         fetch(API_ENDPOINT, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(trackingData),
-             mode: "cors"
+            mode: "cors"
         })
         .then(response => response.json())
         .then(user => {
             console.log("✅ Response from API:", user);
         })
-          //   .then((data) => console.log("✅ Data sent:", data))
-            .catch((error) => console.error("❌ API Error:", error));
+        .catch((error) => console.error("❌ API Error:", error));
     }
-    
-  
+
     // Track Events
     document.addEventListener("click", function (event) {
         if (event.target.tagName === "BUTTON") {
@@ -119,7 +117,7 @@
             sendTrackingData("Navigation Click", { link: event.target.href });
         }
     });
-  
+
     document.addEventListener("submit", function (event) {
         if (event.target.tagName === "FORM") {
             event.preventDefault();
@@ -127,12 +125,12 @@
             new FormData(event.target).forEach((value, key) => {
                 formData[key] = value;
             });
-  
+
             sendTrackingData("Form Submission", { formData });
             event.target.submit();
         }
     });
-  
+
     document.addEventListener("change", function (event) {
         if (event.target.tagName === "SELECT") {
             sendTrackingData("Dropdown Selection", { field: event.target.name, selectedValue: event.target.value });
@@ -144,25 +142,23 @@
             sendTrackingData("Checkbox Click", { field: event.target.name, checked: event.target.checked });
         }
     });
-  
+
     window.addEventListener("scroll", function () {
         const scrollPercentage = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
         sendTrackingData("Scroll Tracking", { scrollPercentage: scrollPercentage.toFixed(2) + "%" });
     });
-  
+
     window.addEventListener("beforeunload", function () {
         sendTrackingData("Session End", { sessionDuration: Math.floor((Date.now() - sessionStartTime) / 1000) + "s" });
     });
-  
+
     window.addEventListener("load", () => {
         getUserDetailsFromPage();
         
-        // 🔹 Delay tracking by 4 seconds to allow role/email extraction
+        // 🔹 Delay tracking by 2 seconds to allow details extraction
         setTimeout(() => {
             sendTrackingData("Page Load");
         }, 2000);
     });
-    
-    
-  
-  })();
+
+})();
