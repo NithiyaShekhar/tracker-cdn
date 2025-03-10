@@ -1,17 +1,16 @@
 (function () {
-    const API_ENDPOINT = "https://24f6-60-243-64-58.ngrok-free.app/webhook";
+    const API_ENDPOINT = "https://3861-60-243-64-58.ngrok-free.app/webhook";
     let sessionStartTime = Date.now();
   
     // Function to Get or Generate User ID
     function getUserId() {
-      return localStorage.getItem("userId") || null; // Fetch the actual user ID
-  }
-  
-  
-  
+        return localStorage.getItem("userId") || "unknown_user";
+    }
+    
     function getUserEmail() {
-      return localStorage.getItem("userEmail") || "guest@example.com"; // email retrieval logic
-  }
+        return localStorage.getItem("userEmail") || "unknown@example.com";
+    }
+    
   
   function getUserRole() {
       return localStorage.getItem("userRole") || "guest"; // role retrieval logic
@@ -63,12 +62,30 @@
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(trackingData),
+            credentials: "include",
              mode: "cors"
         })
             .then((response) => response.json())
+            .then(user => {
+                if (user.id && user.email) {
+                    localStorage.setItem("userId", user.id);
+                    localStorage.setItem("userEmail", user.email);
+                    localStorage.setItem("userRole", user.role || "user");
+                }
+            })
           //   .then((data) => console.log("✅ Data sent:", data))
             .catch((error) => console.error("❌ API Error:", error));
     }
+    fetch("https://your-backend.com/auth/user", { credentials: "include" })
+    .then(response => response.json())
+    .then(user => {
+        if (user.id && user.email) {
+            localStorage.setItem("userId", user.id);
+            localStorage.setItem("userEmail", user.email);
+            localStorage.setItem("userRole", user.role || "user");
+        }
+    })
+    .catch(error => console.error("Error fetching user:", error));
   
     // Track Events
     document.addEventListener("click", function (event) {
