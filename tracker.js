@@ -5,11 +5,19 @@
       // Extract User Details from the Page
       function getUserDetailsFromPage() {
         setTimeout(() => {
+            // Get all elements with class "rt_table_col"
+            let emailElements = document.querySelectorAll(".rt_table_col");
             let roleElement = document.querySelector(".header-user-name"); // Role
-            let emailElement = document.querySelector(".rt_table_col"); // Email
     
             let role = roleElement ? roleElement.innerText.trim() : null;
-            let email = emailElement ? emailElement.innerText.trim() : null;
+            let email = null;
+    
+            // Loop through spans and find the one containing '@'
+            emailElements.forEach(el => {
+                if (el.innerText.includes("@")) {
+                    email = el.innerText.trim();
+                }
+            });
     
             console.log("Extracted Role:", role);
             console.log("Extracted Email:", email);
@@ -18,14 +26,18 @@
                 localStorage.setItem("userEmail", email);
                 localStorage.setItem("userRole", role);
             } else {
-                console.warn("User details not found!");
+                console.warn("❌ User details not found!");
             }
     
-            // Verify by retrieving from localStorage
+            // Verify stored values
             console.log("Stored Email:", localStorage.getItem("userEmail"));
             console.log("Stored Role:", localStorage.getItem("userRole"));
-        }, 2000); // Wait 2 seconds for DOM to load
+        }, 3000); // 3 seconds delay to ensure elements are loaded
     }
+    
+    // Run function after page load
+    window.addEventListener("load", getUserDetailsFromPage);
+    
     
     // Ensure function runs after the page is fully loaded
     window.addEventListener("load", getUserDetailsFromPage);
