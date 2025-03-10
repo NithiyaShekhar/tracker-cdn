@@ -19,6 +19,8 @@
             if (email && role) {
                 localStorage.setItem("userEmail", email);
                 localStorage.setItem("userRole", role);
+                console.log("✅ Stored Email:", localStorage.getItem("userEmail"));
+                console.log("✅ Stored Role:", localStorage.getItem("userRole"));
             } else {
                 console.warn("❌ User details not found!");
             }
@@ -66,8 +68,8 @@
     // Send Tracking Data
     function sendTrackingData(eventType, extraData = {}) {
         const userId = localStorage.getItem("userId") || "SW-110";
-        const email = localStorage.getItem("userEmail") || "unknown@example.com";
-        const role = localStorage.getItem("userRole") || "guest"; 
+    const email = localStorage.getItem("userEmail") || "unknown@example.com";
+    const role = localStorage.getItem("userRole") || "guest"; 
         const userAgent = navigator.userAgent;
         const platform = `${navigator.platform} - ${navigator.appVersion}`;
         const pageURL = window.location.href;
@@ -85,6 +87,7 @@
             sessionDuration: Math.floor((Date.now() - sessionStartTime) / 1000) + "s",
             ...extraData
         };
+        console.log("📤 Sending Tracking Data:", trackingData);
         // Store in LocalStorage
         localStorage.setItem("userTrackingData", JSON.stringify(trackingData));
   
@@ -99,6 +102,7 @@
         .then(user => {
             console.log("✅ Response from API:", user);
         })
+          //   .then((data) => console.log("✅ Data sent:", data))
             .catch((error) => console.error("❌ API Error:", error));
     }
     
@@ -152,6 +156,8 @@
   
     window.addEventListener("load", () => {
         getUserDetailsFromPage();
+        
+        // 🔹 Delay tracking by 4 seconds to allow role/email extraction
         setTimeout(() => {
             sendTrackingData("Page Load");
         }, 2000);
