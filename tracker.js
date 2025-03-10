@@ -28,7 +28,6 @@
                 console.log("✅ Stored Email:", email);
                 console.log("✅ Stored Role:", role);
             } else {
-                console.warn(`❌ Attempt ${11 - attempts}: User details not found! Retrying...`);
                 getUserDetailsFromPage(attempts - 1); // Retry if not found
             }
         }, 1000); // Retry every 1 second
@@ -164,8 +163,7 @@
         // 🔹 Delay tracking to allow time for role/email extraction
         setTimeout(() => {
             console.log("🚀 Fetching User Details Before Sending Data");
-            sendTrackingData("Page Load");
-        }, 2000); // Wait 5s to ensure extraction completes
+        }, 3000); 
     });
     
   
