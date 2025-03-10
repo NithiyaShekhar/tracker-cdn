@@ -1,19 +1,29 @@
 (function () {
     const API_ENDPOINT = "https://c1b4-60-243-64-58.ngrok-free.app/webhook";
     let sessionStartTime = Date.now();
+
+      // Extract User Details from the Page
+      function getUserDetailsFromPage() {
+        let role = document.querySelector(".con_foo_title")?.innerText.trim() || "guest";
+        let email = document.querySelector(".rt_table_col")?.innerText.trim() || "unknown@example.com";
+
+        // Store in LocalStorage for Future Use
+        localStorage.setItem("userEmail", email);
+        localStorage.setItem("userRole", role);
+    }
   
     // Function to Get or Generate User ID
     function getUserId() {
-        return localStorage.getItem("userId") || "unknown_user";
+        return localStorage.getItem("userId") || "123";
     }
     
     function getUserEmail() {
-        return localStorage.getItem("userEmail") || "unknown@example.com";
+        return localStorage.getItem("userEmail") || "random@example.com";
     }
     
   
   function getUserRole() {
-      return localStorage.getItem("userRole") || "guest"; // role retrieval logic
+      return localStorage.getItem("userRole") || "guest"; 
   }
   
     // Get Referrer Source
