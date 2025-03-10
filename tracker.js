@@ -75,19 +75,7 @@
           //   .then((data) => console.log("✅ Data sent:", data))
             .catch((error) => console.error("❌ API Error:", error));
     }
-    fetch(API_ENDPOINT, { 
-        credentials: "include",
-        mode: "cors" 
-    })
-    .then(response => response.json())
-    .then(user => {
-        if (user.id && user.email) {
-            localStorage.setItem("userId", user.id);
-            localStorage.setItem("userEmail", user.email);
-            localStorage.setItem("userRole", user.role || "user");
-        }
-    })
-    .catch(error => console.error("Error fetching user:", error));
+    
   
     // Track Events
     document.addEventListener("click", function (event) {
