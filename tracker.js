@@ -3,10 +3,15 @@
     let sessionStartTime = Date.now();
 
       // Extract User Details from the Page
-      function getUserDetailsFromPage() {
+      function getUserDetailsFromPage(attempts = 10) {
+        if (attempts <= 0) {
+            console.warn("❌ User details not found after multiple attempts!");
+            return;
+        }
+    
         setTimeout(() => {
-            let emailElements = document.querySelectorAll(".email");
-            let roleElement = document.querySelector(".con_title");
+            let emailElements = document.querySelectorAll(".rt_table_col"); // Updated class name
+            let roleElement = document.querySelector(".con_foo_title"); // Ensure correct selector
     
             let role = roleElement ? roleElement.innerText.trim() : null;
             let email = null;
@@ -16,20 +21,20 @@
                     email = el.innerText.trim();
                 }
             });
+    
             if (email && role) {
                 localStorage.setItem("userEmail", email);
                 localStorage.setItem("userRole", role);
-                console.log("✅ Stored Email:", localStorage.getItem("userEmail"));
-                console.log("✅ Stored Role:", localStorage.getItem("userRole"));
+                console.log("✅ Stored Email:", email);
+                console.log("✅ Stored Role:", role);
             } else {
-                console.warn("❌ User details not found!");
+                console.warn(`❌ Attempt ${11 - attempts}: User details not found! Retrying...`);
+                getUserDetailsFromPage(attempts - 1); // Retry if not found
             }
-        }, 3000);
+        }, 1000); // Retry every 1 second
     }
     
     
-    // Run function after page load
-    window.addEventListener("load", getUserDetailsFromPage);
     
     
     // Ensure function runs after the page is fully loaded
@@ -70,7 +75,6 @@
         const userId = localStorage.getItem("userId") || "SW-110";
     const email = localStorage.getItem("userEmail") || "unknown@example.com";
     const role = localStorage.getItem("userRole") || "guest"; 
-        const userAgent = navigator.userAgent;
         const platform = `${navigator.platform} - ${navigator.appVersion}`;
         const pageURL = window.location.href;
         const timestamp = new Date().toISOString();
@@ -155,14 +159,14 @@
     });
   
     window.addEventListener("load", () => {
-        getUserDetailsFromPage();
+        getUserDetailsFromPage(); 
         
-        // 🔹 Delay tracking by 4 seconds to allow role/email extraction
+        // 🔹 Delay tracking to allow time for role/email extraction
         setTimeout(() => {
+            console.log("🚀 Fetching User Details Before Sending Data");
             sendTrackingData("Page Load");
-        }, 2000);
+        }, 2000); // Wait 5s to ensure extraction completes
     });
-    
     
   
   })();  
