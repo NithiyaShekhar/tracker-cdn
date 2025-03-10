@@ -1,5 +1,5 @@
 (function () {
-    const API_ENDPOINT = "https://3861-60-243-64-58.ngrok-free.app/webhook";
+    const API_ENDPOINT = "https://c1b4-60-243-64-58.ngrok-free.app/webhook";
     let sessionStartTime = Date.now();
   
     // Function to Get or Generate User ID
@@ -62,7 +62,6 @@
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(trackingData),
-            credentials: "include",
              mode: "cors"
         })
             .then((response) => response.json())
