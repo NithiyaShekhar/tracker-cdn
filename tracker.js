@@ -4,13 +4,21 @@
 
       // Extract User Details from the Page
       function getUserDetailsFromPage() {
-        let role = document.querySelector(".header-user-name")?.innerText.trim() || "guest";
-        let email = document.querySelector(".header-user-name")?.innerText.trim() || "unknown@example.com";
-
-        // Store in LocalStorage for Future Use
-        localStorage.setItem("userEmail", email);
-        localStorage.setItem("userRole", role);
+        setTimeout(() => {
+            let roleElement = document.querySelector(".header-user-name");
+            let emailElement = document.querySelector(".header-user-name");
+    
+            let role = roleElement ? roleElement.innerText.trim() : "guest";
+            let email = emailElement ? emailElement.innerText.trim() : "random@example.com";
+    
+            console.log("Extracted Role:", role);
+            console.log("Extracted Email:", email);
+    
+            localStorage.setItem("userEmail", email);
+            localStorage.setItem("userRole", role);
+        }, 2000);  // Wait 2 seconds to allow DOM to load
     }
+    
   
     // Function to Get or Generate User ID
     function getUserId() {
