@@ -5,35 +5,32 @@
       // Extract User Details from the Page
       function getUserDetailsFromPage() {
         setTimeout(() => {
-            // Get all elements with class "rt_table_col"
             let emailElements = document.querySelectorAll(".rt_table_col");
-            let roleElement = document.querySelector(".header-user-name"); // Role
+            let roleElement = document.querySelector(".con_foo_title"); // Role
     
             let role = roleElement ? roleElement.innerText.trim() : null;
             let email = null;
     
-            // Loop through spans and find the one containing '@'
             emailElements.forEach(el => {
                 if (el.innerText.includes("@")) {
                     email = el.innerText.trim();
                 }
             });
     
-            console.log("Extracted Role:", role);
-            console.log("Extracted Email:", email);
+            console.log("✅ Extracted Role:", role);
+            console.log("✅ Extracted Email:", email);
     
             if (email && role) {
                 localStorage.setItem("userEmail", email);
                 localStorage.setItem("userRole", role);
+                console.log("✅ Stored Email:", localStorage.getItem("userEmail"));
+                console.log("✅ Stored Role:", localStorage.getItem("userRole"));
             } else {
                 console.warn("❌ User details not found!");
             }
-    
-            // Verify stored values
-            console.log("Stored Email:", localStorage.getItem("userEmail"));
-            console.log("Stored Role:", localStorage.getItem("userRole"));
-        }, 3000); // 3 seconds delay to ensure elements are loaded
+        }, 3000);
     }
+    
     
     // Run function after page load
     window.addEventListener("load", getUserDetailsFromPage);
@@ -74,9 +71,9 @@
   
     // Send Tracking Data
     function sendTrackingData(eventType, extraData = {}) {
-        const userId = getUserId();
-        const email = getUserEmail();
-        const role = getUserRole();
+        const userId = localStorage.getItem("userId") || "SW-110";
+    const email = localStorage.getItem("userEmail") || "unknown@example.com";
+    const role = localStorage.getItem("userRole") || "guest"; 
         const userAgent = navigator.userAgent;
         const platform = `${navigator.platform} - ${navigator.appVersion}`;
         const pageURL = window.location.href;
@@ -94,7 +91,7 @@
             sessionDuration: Math.floor((Date.now() - sessionStartTime) / 1000) + "s",
             ...extraData
         };
-  
+        console.log("📤 Sending Tracking Data:", trackingData);
         // Store in LocalStorage
         localStorage.setItem("userTrackingData", JSON.stringify(trackingData));
   
@@ -105,14 +102,10 @@
             body: JSON.stringify(trackingData),
              mode: "cors"
         })
-            .then((response) => response.json())
-            .then(user => {
-                if (user.id && user.email) {
-                    localStorage.setItem("userId", user.id);
-                    localStorage.setItem("userEmail", user.email);
-                    localStorage.setItem("userRole", user.role || "user");
-                }
-            })
+        .then(response => response.json())
+        .then(user => {
+            console.log("✅ Response from API:", user);
+        })
           //   .then((data) => console.log("✅ Data sent:", data))
             .catch((error) => console.error("❌ API Error:", error));
     }
@@ -165,13 +158,15 @@
         sendTrackingData("Session End", { sessionDuration: Math.floor((Date.now() - sessionStartTime) / 1000) + "s" });
     });
   
-    window.addEventListener("load", function () {
-        getUserDetailsFromPage(); // Extract user details from the page
+    window.addEventListener("load", () => {
+        getUserDetailsFromPage();
+        
+        // 🔹 Delay tracking by 4 seconds to allow role/email extraction
         setTimeout(() => {
-            console.log("User Email from LocalStorage:", localStorage.getItem("userEmail"));
-            console.log("User Role from LocalStorage:", localStorage.getItem("userRole"));
-        }, 3000); // Wait 3 seconds to verify storage
+            sendTrackingData("Page Load");
+        }, 2000);
     });
+    
     
   
   })();
