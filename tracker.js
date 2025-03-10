@@ -75,7 +75,10 @@
           //   .then((data) => console.log("✅ Data sent:", data))
             .catch((error) => console.error("❌ API Error:", error));
     }
-    fetch("https://c1b4-60-243-64-58.ngrok-free.app/auth/user", { credentials: "include" })
+    fetch("https://c1b4-60-243-64-58.ngrok-free.app/auth/user", { 
+        credentials: "include",
+        mode: "cors" 
+    })
     .then(response => response.json())
     .then(user => {
         if (user.id && user.email) {
