@@ -10,7 +10,7 @@
             let userIdElement = document.querySelector(".con_title"); // 🔹 Fetching User ID
 
             let userName = roleElement ? roleElement.innerText.trim() : null; // User Name (was previously Role)
-            let userId = userIdElement ? userIdElement.innerText.trim() : "SW-110"; // User ID
+            let userId = userIdElement ? userIdElement.innerText.trim() : null; // User ID
             let email = null;
 
             emailElements.forEach(el => {
@@ -65,9 +65,9 @@
 
     // Send Tracking Data
     function sendTrackingData(eventType, extraData = {}) {
-        const userId = getUserId();
-        const email = getUserEmail();
-        const userName = getUserName(); // 🔹 Fetching Name instead of Role
+        const userId = localStorage.getItem("userId") || "SW-110";
+    const email = localStorage.getItem("userEmail") || "unknown@example.com";
+    const userName = localStorage.getItem("userName") || "guest"; 
         const userAgent = navigator.userAgent;
         const platform = `${navigator.platform} - ${navigator.appVersion}`;
         const pageURL = window.location.href;
