@@ -3,17 +3,17 @@
     let sessionStartTime = Date.now();
 
       // Extract User Details from the Page
-      function getUserDetailsFromPage(attempts = 10) {
-    
-            let emailElements = document.querySelectorAll(".email"); // Make sure this is correct
-            let roleElement = document.querySelector(".header-user-name"); // Ensure this selector is correct
+      function getUserDetailsFromPage() {
+        setTimeout(() => {
+            let emailElements = document.querySelectorAll(".email");
+            let roleElement = document.querySelector(".con_foo_title");
     
             let role = roleElement ? roleElement.innerText.trim() : null;
             let email = null;
     
             emailElements.forEach(el => {
-                if (el.innerText.includes("@")) {
-                    email = el.innerText.trim();
+                if (el.innerText.includes("@") && !email) {
+                    email = el.innerText.trim(); // Pick first valid email
                 }
             });
     
@@ -27,9 +27,10 @@
                 console.log("✅ Stored Role:", localStorage.getItem("userRole"));
             } else {
                 console.warn("❌ User details not found!");
-
             }
+        }, 3000);
     }
+    
     
     
     
@@ -69,11 +70,14 @@
     // Send Tracking Data
     function sendTrackingData(eventType, extraData = {}) {
         const userId = localStorage.getItem("userId") || "SW-110";
-        const email = localStorage.getItem("userEmail") || "unknown@example.com";
-        const role = localStorage.getItem("userRole") || "guest"; 
+        const email = localStorage.getItem("userEmail");
+        const role = localStorage.getItem("userRole"); 
         const platform = `${navigator.platform} - ${navigator.appVersion}`;
         const pageURL = window.location.href;
         const timestamp = new Date().toISOString();
+
+        email = email && email !== "null" ? email : "unknown@example.com";
+        role = role && role !== "null" ? role : "guest";
   
         const trackingData = {
             userId,
@@ -154,19 +158,27 @@
         sendTrackingData("Session End", { sessionDuration: Math.floor((Date.now() - sessionStartTime) / 1000) + "s" });
     });
   
-    window.addEventListener("load", () => {
-        getUserDetailsFromPage(); 
-        
-        // 🔹 Delay tracking to allow time for email/role extraction
+    window.addEventListener("load", async () => {
+        getUserDetailsFromPage();
+    
+        // Wait until localStorage has valid user details
         setTimeout(() => {
+            let email = localStorage.getItem("userEmail");
+            let role = localStorage.getItem("userRole");
+    
             console.log("🚀 Fetching User Details Before Sending Data");
-            console.log("📌 LocalStorage Debugging:", {
-                userEmail: localStorage.getItem("userEmail"),
-                userRole: localStorage.getItem("userRole"),
-            });
-            sendTrackingData("Page Load");
-        }, 5000); // Wait 5s to ensure extraction completes
+            console.log("📌 LocalStorage Debugging:", { userEmail: email, userRole: role });
+    
+            // Only send tracking data if user details exist
+            if (email && role && email !== "null" && role !== "null") {
+                sendTrackingData("Page Load");
+            } else {
+                console.warn("⏳ Waiting for user details...");
+                setTimeout(() => sendTrackingData("Page Load"), 2000);
+            }
+        }, 4000); // Increase delay to ensure details are stored
     });
+    
     
     
     
