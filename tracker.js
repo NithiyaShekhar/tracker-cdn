@@ -1,5 +1,5 @@
 (function () {
-    const API_ENDPOINT = "https://c1b4-60-243-64-58.ngrok-free.app/webhook";
+    const API_ENDPOINT = "https://aeef-60-243-64-58.ngrok-free.app/webhook";
     let sessionStartTime = Date.now();
 
       // Extract User Details from the Page
@@ -26,7 +26,8 @@
                 console.log("✅ Stored Email:", localStorage.getItem("userEmail"));
                 console.log("✅ Stored Role:", localStorage.getItem("userRole"));
             } else {
-                getUserDetailsFromPage(attempts - 1); // Retry if not found
+                console.warn("❌ User details not found!");
+
             }
     }
     
