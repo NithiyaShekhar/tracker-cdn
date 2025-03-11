@@ -76,8 +76,6 @@
         const pageURL = window.location.href;
         const timestamp = new Date().toISOString();
 
-        email = email && email !== "null" ? email : "unknown@example.com";
-        role = role && role !== "null" ? role : "guest";
   
         const trackingData = {
             userId,
