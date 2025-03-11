@@ -17,14 +17,14 @@
                 }
             });
     
-            console.log("✅ Extracted Role:", role);
-            console.log("✅ Extracted Email:", email);
+            // console.log("✅ Extracted Role:", role);
+            // console.log("✅ Extracted Email:", email);
     
             if (email && role) {
                 localStorage.setItem("userEmail", email);
                 localStorage.setItem("userRole", role);
-                console.log("✅ Stored Email:", localStorage.getItem("userEmail"));
-                console.log("✅ Stored Role:", localStorage.getItem("userRole"));
+                // console.log("✅ Stored Email:", localStorage.getItem("userEmail"));
+                // console.log("✅ Stored Role:", localStorage.getItem("userRole"));
             } else {
                 console.warn("❌ User details not found!");
             }
@@ -89,7 +89,7 @@
             sessionDuration: Math.floor((Date.now() - sessionStartTime) / 1000) + "s",
             ...extraData
         };
-        console.log("📤 Sending Tracking Data:", trackingData);
+        // console.log("📤 Sending Tracking Data:", trackingData);
         // Store in LocalStorage
         localStorage.setItem("userTrackingData", JSON.stringify(trackingData));
   
@@ -101,9 +101,9 @@
              mode: "cors"
         })
         .then(response => response.json())
-        .then(user => {
-            console.log("✅ Response from API:", user);
-        })
+        // .then(user => {
+        //     console.log("✅ Response from API:", user);
+        // })
           //   .then((data) => console.log("✅ Data sent:", data))
             .catch((error) => console.error("❌ API Error:", error));
     }
@@ -164,8 +164,8 @@
             let email = localStorage.getItem("userEmail");
             let role = localStorage.getItem("userRole");
     
-            console.log("🚀 Fetching User Details Before Sending Data");
-            console.log("📌 LocalStorage Debugging:", { userEmail: email, userRole: role });
+            // console.log("🚀 Fetching User Details Before Sending Data");
+            // console.log("📌 LocalStorage Debugging:", { userEmail: email, userRole: role });
     
             // Only send tracking data if user details exist
             if (email && role && email !== "null" && role !== "null") {
@@ -174,7 +174,7 @@
                 console.warn("⏳ Waiting for user details...");
                 setTimeout(() => sendTrackingData("Page Load"), 2000);
             }
-        }, 4000); // Increase delay to ensure details are stored
+        }, 2000); // Increase delay to ensure details are stored
     });
     
     
