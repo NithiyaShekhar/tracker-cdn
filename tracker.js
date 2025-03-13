@@ -3,10 +3,8 @@
     let sessionStartTime = Date.now();
 
     function getUserId() {
-    return "SW-" + Math.floor(100 + Math.random() * 900); 
-}
-
-
+        return "SW-" + Math.floor(100 + Math.random() * 900);
+    }
 
     function getUserEmail() {
         return localStorage.getItem("userEmail") || "admin@drift.com";
@@ -17,7 +15,6 @@
     }
 
     function getUserDetailsFromPage(callback) {
-
         function extractDetails() {
             let emailElements = document.querySelectorAll(".email");
             let roleElement = document.querySelector(".con_foo_title");
@@ -74,9 +71,6 @@
             mode: "cors"
         })
         .then(response => response.json())
-        // .then(user => {
-        //     console.log("✅ Response from API:", user);
-        // })
         .catch((error) => console.error("❌ API Error:", error));
     }
 
@@ -108,32 +102,76 @@
     }
 
     // **🔴 TRACKING EVENT LISTENERS 🔴**
-
     document.addEventListener("click", function (event) {
         let target = event.target;
 
         if (target.tagName === "BUTTON") {
-            sendTrackingData("Button Click", { buttonName: target.innerText });
+            sendTrackingData("Button Click", { buttonName: target.innerText.trim() });
         }
+
         if (target.tagName === "IMG") {
             sendTrackingData("Image Click", { imageSrc: target.src });
         }
+
         if (target.tagName === "A") {
             sendTrackingData("Navigation Click", { link: target.href });
         }
 
-        // **🔵 TRACKING CARD CLICKS 🔵**
-        let card = target.closest(".card, .card-body"); 
+        if (target.tagName === "INPUT" && target.type === "checkbox") {
+            sendTrackingData("Checkbox Click", { 
+                checkboxName: target.name || "Unnamed Checkbox",
+                checked: target.checked
+            });
+        }
+
+        let card = target.closest(".card, .card-body");
         if (card) {
             let cardData = {
                 cardTitle: card.querySelector(".card-title")?.innerText || "Unknown Title",
                 cardDescription: card.querySelector(".card-content")?.innerText || "No Description",
                 cardID: card.dataset.id || "card-1"
             };
-
             sendTrackingData("Card Click", cardData);
         }
     });
+
+    document.addEventListener("change", function (event) {
+        let target = event.target;
+
+        if (target.tagName === "SELECT") {
+            sendTrackingData("Dropdown Change", { 
+                dropdownName: target.name || "Unnamed Dropdown",
+                selectedValue: target.value
+            });
+        }
+
+        if (target.tagName === "INPUT" && target.type !== "checkbox") {
+            sendTrackingData("Input Change", { 
+                inputName: target.name || "Unnamed Input",
+                inputValue: target.value
+            });
+        }
+    });
+
+    document.addEventListener("focus", function (event) {
+        let target = event.target;
+
+        if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") {
+            sendTrackingData("Input Focus", { 
+                inputName: target.name || "Unnamed Input"
+            });
+        }
+    }, true);
+
+    document.addEventListener("blur", function (event) {
+        let target = event.target;
+
+        if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") {
+            sendTrackingData("Input Blur", { 
+                inputName: target.name || "Unnamed Input"
+            });
+        }
+    }, true);
 
     document.addEventListener("submit", function (event) {
         if (event.target.tagName === "FORM") {
@@ -157,4 +195,4 @@
         sendTrackingData("Session End", { sessionDuration: Math.floor((Date.now() - sessionStartTime) / 1000) + "s" });
     });
 
-  })();
+})();
