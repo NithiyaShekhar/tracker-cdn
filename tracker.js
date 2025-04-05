@@ -1,5 +1,5 @@
 (function () {
-    const API_ENDPOINT = "https://79e4-27-4-42-141.ngrok-free.app/webhook";
+    const API_ENDPOINT = "https://d8d2-27-4-42-141.ngrok-free.app/webhook";
     let sessionStartTime = Date.now();
 
     function getUserId() {
