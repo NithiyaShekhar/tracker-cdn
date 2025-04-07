@@ -108,19 +108,19 @@
       return "Desktop";
     }
   
-    // ✅ Page View
+    // Page View
     window.addEventListener("load", () => {
       getUserDetailsFromPage(() => sendTrackingData("page_view"));
     });
   
-    // ✅ Exit Page
+    // Exit Page
     window.addEventListener("beforeunload", () => {
       sendTrackingData("exit_page", {
         sessionDuration: Math.floor((Date.now() - sessionStartTime) / 1000) + "s"
       });
     });
   
-    // ✅ Scroll Depth
+    // Scroll Depth
     window.addEventListener("scroll", () => {
       const scrollDepth = Math.round(
         (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
@@ -130,12 +130,12 @@
       }
     });
   
-    // ✅ Mouse Movement
+    // Mouse Movement
     document.addEventListener("mousemove", (e) => {
       sendTrackingData("mouse_move", { x: e.clientX, y: e.clientY });
     });
   
-    // ✅ Hover Tracking
+    // Hover Tracking
     document.addEventListener("mouseover", (e) => {
       if (e.target.closest("button, a, img, .card")) {
         sendTrackingData("hover", {
@@ -146,7 +146,7 @@
       }
     });
   
-    // ✅ Clicks
+    // Clicks
     document.addEventListener("click", (e) => {
       const target = e.target;
       if (target.matches("button, a, img")) {
@@ -165,7 +165,7 @@
       }
     });
   
-    // ✅ Input/Select Events
+    // Input/Select Events
     document.addEventListener("change", (e) => {
       const target = e.target;
       if (target.tagName === "SELECT") {
@@ -183,7 +183,7 @@
       }
     });
   
-    // ✅ Focus/Blur
+    // Focus/Blur
     document.addEventListener("focus", (e) => {
       if (e.target.matches("input, textarea")) {
         sendTrackingData("focus", { name: e.target.name });
@@ -196,12 +196,33 @@
       }
     }, true);
   
-    // ✅ Form Submissions
+    // Form Submissions
     document.addEventListener("submit", (e) => {
       const form = e.target;
       const formData = {};
       new FormData(form).forEach((value, key) => formData[key] = value);
       sendTrackingData("form_submit", { formData });
     });
+
+    // Custom Payment Tracking
+    window.trackPaymentEvent = function ({
+    userId,
+    cardType,
+    amount,
+    ip,
+    location,
+    deviceId
+        }) {
+    sendTrackingData("payment_attempt", {
+      user_id: userId,
+      card_type: cardType,
+      amount,
+      ip_address: ip,
+      location,
+      device_id: deviceId,
+      timestamp: new Date().toISOString()
+    });
+  };
+  
   })();
   
