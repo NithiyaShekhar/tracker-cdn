@@ -1,5 +1,5 @@
 (function () {
-  const API_ENDPOINT = "http://3.71.113.248:5000/webhook"; // Replace with your actual endpoint
+  const API_ENDPOINT = "http://18.156.4.50:5000/webhook"; // Replace with your actual endpoint
   let sessionStartTime = Date.now();
 
   // === Utility Functions ===
